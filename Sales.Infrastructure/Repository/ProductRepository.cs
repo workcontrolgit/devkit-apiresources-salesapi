@@ -1,40 +1,45 @@
-﻿using Dapper;
+﻿using Microsoft.Extensions.Configuration;
 using Sales.Application.Interfaces;
 using Sales.Core.Entities;
-using Microsoft.Extensions.Configuration;
+using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
-using SqlKata.Execution;
 
 namespace Sales.Infrastructure.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration _configuration;
         private readonly QueryFactory _db;
 
         public ProductRepository(IConfiguration configuration, QueryFactory db)
         {
-            this.configuration = configuration;
+            _configuration = configuration;
             _db = db;
+        }
+
+        public async Task<IEnumerable<Product>> GetAllAsync()
+        {
+            var result = await _db.Query("Products").GetAsync<Product>();
+            return result;
 
         }
+
+        public async Task<Product> GetByIdAsync(Guid id)
+        {
+            var result = await _db.Query("Products").Where("Id", "=", id)
+                .FirstOrDefaultAsync<Product>();
+            return result;
+        }
+
+
         public async Task<Guid> AddAsync(Product entity)
         {
             entity.AddedOn = DateTime.Now;
-            entity.Id = Guid.NewGuid();
-            //var sql = "Insert into Products (Name,Description,Barcode,Rate,AddedOn) VALUES (@Name,@Description,@Barcode,@Rate,@AddedOn)";
-            //using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-            //{
-            //    connection.Open();
-            //    var result = await connection.ExecuteAsync(sql, entity);
-            //    return c;
-            //}
+            entity.Id = await SetPrimaryKey(entity.Id);
 
-            var affectedRecords = await _db.Query("Products").InsertAsync(new
+            var affectedRows = await _db.Query("Products").InsertAsync(new
             {
                 Id = entity.Id,
                 Name = entity.Name,
@@ -44,68 +49,75 @@ namespace Sales.Infrastructure.Repository
                 AddedOn = entity.AddedOn
             });
 
+            if (affectedRows != 1)
+                // insert failed, return Guid strutue all zero (0).  Front end should check status for empty Guid
+                return Guid.Empty;
+            
+            //return Guid of new insert row
             return entity.Id;
-
 
         }
 
         public async Task<int> DeleteAsync(Guid id)
         {
-            var sql = "DELETE FROM Products WHERE Id = @Id";
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-            {
-                connection.Open();
-                var result = await connection.ExecuteAsync(sql, new { Id = id });
-                return result;
-            }
-        }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
-        {
-            //var sql = "SELECT * FROM Products";
-            //using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-            //{
-            //    connection.Open();
-            //    var result = await connection.QueryAsync<Product>(sql);
-            //    return result.ToList();
-            //}
-
-            var result = _db.Query("Products")
-                .Select(
-                "Id",
-                "Name",
-                "Barcode",
-                "Description",
-                "Rate",
-                "AddedOn",
-                "ModifiedOn");
-
-            return await result.GetAsync<Product>();
-
+            var affectedRows = await _db.Query("Products").Where("Id", "=", id).DeleteAsync();
+            return affectedRows;
 
         }
 
-        public async Task<Product> GetByIdAsync(Guid id)
-        {
-            var sql = "SELECT * FROM Products WHERE Id = @Id";
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-            {
-                connection.Open();
-                var result = await connection.QuerySingleOrDefaultAsync<Product>(sql, new { Id = id });
-                return result;
-            }
-        }
 
         public async Task<int> UpdateAsync(Product entity)
         {
             entity.ModifiedOn = DateTime.Now;
-            var sql = "UPDATE Products SET Name = @Name, Description = @Description, Barcode = @Barcode, Rate = @Rate, ModifiedOn = @ModifiedOn  WHERE Id = @Id";
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+
+            var affectedRows = await _db.Query("Products").Where("Id", entity.Id).UpdateAsync(new
             {
-                connection.Open();
-                var result = await connection.ExecuteAsync(sql, entity);
-                return result;
-            }
+                Name = entity.Name,
+                Description = entity.Description,
+                Barcode = entity.Barcode,
+                Rate = entity.Rate,
+                ModifiedOn = entity.ModifiedOn,
+            });
+
+            return affectedRows;
+
         }
+
+        /// <summary>
+        /// Utility to setup primary key
+        /// </summary>
+        private async Task<Guid> SetPrimaryKey(Guid Id)
+        {
+            // set default key value
+            var defaultKey = Guid.NewGuid();
+
+            // check provided id is Guid format
+            bool isGuid = Guid.TryParse(Id.ToString(), out Id);
+
+            if (isGuid)
+            {
+                //use provided key if it has has not been used.
+                if (!await IsUsedPrimaryKey(Id))
+                {
+                    // change defaultKey to provided Id
+                    defaultKey = Id;
+                }
+            }
+            return defaultKey;
+        }
+
+
+        /// <summary>
+        /// Check used primary key
+        /// </summary>
+        private async Task<bool> IsUsedPrimaryKey(Guid Id)
+        {
+            var result = await _db.Query("Products").Where("Id", "=", Id)
+                .FirstOrDefaultAsync<Product>();
+
+            return result != null;
+        }
+
     }
 }
