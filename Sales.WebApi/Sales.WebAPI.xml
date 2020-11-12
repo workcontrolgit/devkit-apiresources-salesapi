@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Sales.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Sales.Api.Controllers.ProductsController.GetAll">
+            <summary>
+            SELECT records
+            </summary>
+        </member>
+        <member name="M:Sales.Api.Controllers.ProductsController.GetById(System.Guid)">
+            <summary>
+            SELECT a record by id
+            </summary>
+            <param name="id">product unique id</param>
+        </member>
+        <member name="M:Sales.Api.Controllers.ProductsController.Add(Sales.Core.Entities.Product)">
+            <summary>
+            INSERT a record
+            </summary>
+            <param name="product">Data fields for insert</param>
+        </member>
+        <member name="M:Sales.Api.Controllers.ProductsController.Update(Sales.Core.Entities.Product)">
+            <summary>
+            UPDATE a record
+            </summary>
+            <param name="product">Data fields for update</param>
+        </member>
+        <member name="M:Sales.Api.Controllers.ProductsController.Delete(System.Guid)">
+            <summary>
+            DELETE a record by id
+            </summary>
+            <param name="id">product unique id</param>
+        </member>
+    </members>
+</doc>
