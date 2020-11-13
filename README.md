@@ -1,13 +1,19 @@
 # DevKit WebAPI - Rapid Prototype
 
-Techniques
+This project is based on Clean Architechture, Repository and Unit of Work patterns.  The source code is organized in contains four projects 
 
-1. Clean Architecture (Onion)
-2. ASP.NET CORE 3.1
-3. Dapper and SQLKata
-4. Repository Pattern and Unit of Work
-5. Swagger for WebAPI documentation and testing
-6. GenFu (Mock Data)
+1. Core
+2. Application
+3. Infrastructure
+4. WebApi
+
+The tech stack includes the following
+
+1. ASP.NET CORE 3.1 for WebAPI
+2. Dapper for ORM
+3. SQLKata for query builder
+4. Swagger for WebAPI documentation and testing
+6. GenFu for mock data
 
 Read more here:  
 
