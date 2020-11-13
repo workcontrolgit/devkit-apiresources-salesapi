@@ -15,5 +15,9 @@ The tech stack includes the following
 4. Swagger for WebAPI documentation and testing
 6. GenFu for mock data
 
-Read more here:  
+Instructions to run the project
+1.  Clone the repo
+2.  Open the SalesApi.sln with Visual Studio 2019
+3.  Create database and table usign the db_script.sql (found in the root foler)
+4.  Run the solution
 
