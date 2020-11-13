@@ -15,6 +15,7 @@ namespace Sales.Infrastructure
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             //SQLKata DI Container https://sqlkata.com/docs/
@@ -27,8 +28,8 @@ namespace Sales.Infrastructure
                     Logger = compiled => Console.WriteLine(compiled)
                 };
             });
-
-
+            //GenFu DI Container https://github.com/MisterJames/GenFu
+            services.AddSingleton(typeof(IMockRepository<>), typeof(MockRepository<>));
         }
     }
 }

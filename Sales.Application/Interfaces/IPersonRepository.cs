@@ -2,7 +2,7 @@
 
 namespace Sales.Application.Interfaces
 {
-    public interface IProductRepository : IGenericRepository<Product>
+    public interface IPersonRepository : IGenericRepository<Person>
     {
     }
 }
