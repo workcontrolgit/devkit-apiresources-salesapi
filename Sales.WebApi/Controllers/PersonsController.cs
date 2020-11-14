@@ -15,12 +15,12 @@ namespace Sales.Api.Controllers
             this.unitOfWork = unitOfWork;
         }
         /// <summary>
-        /// SELECT records from mock data GenFu
+        /// SELECT records from mock library GenFu
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber, int pageSize)
         {
-            var data = await unitOfWork.Persons.GetAllAsync();
+            var data = await unitOfWork.Persons.GetAllAsync(pageNumber, pageSize);
             return Ok(data);
         }
     }

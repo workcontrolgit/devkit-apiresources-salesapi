@@ -2,6 +2,7 @@
 using Sales.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sales.Infrastructure.Repository
@@ -14,7 +15,7 @@ namespace Sales.Infrastructure.Repository
         {
             _dataGeneratorService = dataGeneratorService;
         }
-        public async Task<IEnumerable<Person>> GetAllAsync()
+        public async Task<IEnumerable<Person>> GetAllAsync(int pageNumber, int pageSize)
         {
 
             //Example of custom data
@@ -22,7 +23,7 @@ namespace Sales.Infrastructure.Repository
                 .Fill(p => p.NumberOfKids)
                 .WithinRange(1, 25);
             IEnumerable<Person> result = await _dataGeneratorService.Collection(100);
-            return result;
+            return result.Skip((pageNumber - 1) * pageSize).Take(pageSize); 
         }
 
         public async Task<Person> GetByIdAsync(Guid id)
