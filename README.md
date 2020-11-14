@@ -11,7 +11,7 @@ The tech stack includes the following
 
 1. ASP.NET CORE 3.1 for WebAPI
 2. Dapper for ORM
-3. SQLKata for query builder
+3. SQLKata for query builder and paging
 4. Swagger for WebAPI documentation and testing
 6. GenFu for mock data
 
