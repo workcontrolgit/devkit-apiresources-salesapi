@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sales.Application.Interfaces;
+using Sales.Application.Parameters;
 using Sales.Core.Entities;
 using System;
 using System.Threading.Tasks;
@@ -20,9 +21,9 @@ namespace Sales.Api.Controllers
         /// SELECT records
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllProductsParameter filter)
         {
-            var data = await unitOfWork.Products.GetAllAsync();
+            var data = await unitOfWork.Products.GetAllAsync(filter.PageNumber, filter.PageSize);
             return Ok(data);
         }
         /// <summary>

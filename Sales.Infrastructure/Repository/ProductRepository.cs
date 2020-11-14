@@ -19,9 +19,9 @@ namespace Sales.Infrastructure.Repository
             _db = db;
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var result = await _db.Query("Products").GetAsync<Product>();
+            var result = await _db.Query("Products").ForPage(pageNumber, pageSize).GetAsync<Product>();
             return result;
 
         }
@@ -50,7 +50,7 @@ namespace Sales.Infrastructure.Repository
             });
 
             if (affectedRows != 1)
-                // insert failed, return Guid strutue all zero (0).  Front end should check status for empty Guid
+                // insert failed, return Guid structure all zero (0).  Front end should check status for empty Guid
                 return Guid.Empty;
             
             //return Guid of new insert row
