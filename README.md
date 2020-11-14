@@ -1,6 +1,6 @@
 # DevKit WebAPI - Rapid Prototype
 
-This project is based on Clean Architechture, Repository and Unit of Work patterns.  The source code is organized in contains four projects 
+This project is based on Clean Architechture, Repository and Unit of Work patterns.  The source code is organized in four projects 
 
 1. Core
 2. Application
