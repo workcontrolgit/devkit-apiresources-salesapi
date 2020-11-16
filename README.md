@@ -13,7 +13,7 @@ The tech stack includes the following
 2. Dapper for ORM
 3. SQLKata for query builder and paging
 4. Swagger for WebAPI documentation and testing
-6. GenFu for mock data
+6. GenFu for mock data and rapid webapi prototype
 
 Instructions to run the project
 1.  Clone the repo
